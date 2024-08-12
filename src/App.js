@@ -22,7 +22,7 @@ function App() {
     // Replace React Native components with their React.js equivalents
     convertedCode = convertedCode
       .replace(/View/g, 'div')
-      .replace(/Text/g, 'p')
+      .replace(/<Text/g, '<p')
       .replace(/TouchableOpacity/g, 'button')
       .replace(/StyleSheet.create\({(.*?)}\)/gs, '');
 
@@ -44,8 +44,11 @@ function App() {
 
        // Replace style={styles.someClass} with className="someClass"
        convertedCode = convertedCode.replace(/style={styles\.(\w+)}/g, (match, p1) => {
-        return `className="${p1}"`;
+
+        const cssClassName = p1.replace(/([A-Z])/g, '-$1').toLowerCase();
+        return `className="${cssClassName}"`;
       });
+      
       
     }
 
