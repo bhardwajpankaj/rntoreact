@@ -21,10 +21,23 @@ function App() {
 
     // Replace React Native components with their React.js equivalents
     convertedCode = convertedCode
-      .replace(/View/g, 'div')
-      .replace(/<Text/g, '<p')
-      .replace(/TouchableOpacity/g, 'button')
-      .replace(/StyleSheet.create\({(.*?)}\)/gs, '');
+    .replace(/View/g, 'div')
+    .replace(/<Text/g, '<p')
+    .replace(/<\/Text/g, '</p')
+    .replace(/TouchableOpacity/g, 'button')
+    .replace(/ScrollView/g, 'div')
+    .replace(/FlatList/g, 'ul')
+    .replace(/SectionList/g, 'ul')
+    .replace(/ImageBackground/g, 'div')
+    .replace(/Image/g, 'img')
+    .replace(/TextInput/g, 'input')
+    .replace(/Picker/g, 'select')
+    .replace(/Picker.Item/g, 'option')
+    .replace(/Switch/g, 'input type="checkbox"')
+    .replace(/ActivityIndicator/g, 'div') // Typically replaced with a custom loading spinner
+    .replace(/Button/g, 'button')
+    .replace(/SafeAreaView/g, 'div')
+    .replace(/StyleSheet.create\({(.*?)}\)/gs, '');
 
     // Extract and convert the styles to CSS
     const styleRegex = /const styles = StyleSheet.create\(({[\s\S]*?})\);/g;
