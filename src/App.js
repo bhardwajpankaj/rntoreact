@@ -5,14 +5,14 @@ function App() {
   const [reactNativeCode, setReactNativeCode] = useState('');
   const [reactJsCode, setReactJsCode] = useState('');
   const [cssCode, setCssCode] = useState('');
+  const [showToast, setShowToast] = useState(false);
 
   const handleConvert = () => {
     let convertedCode = reactNativeCode;
     let convertedCss = '';
-    
-    convertedCode = convertedCode.replace(/import {[^}]+} from 'react-native';/g, '');
-    
 
+    // Remove any existing React Native import statement
+    convertedCode = convertedCode.replace(/import {[^}]+} from 'react-native';/g, '');
 
     // Ensure the import React statement is added once at the beginning
     if (!convertedCode.includes("import React from 'react';")) {
@@ -42,14 +42,11 @@ function App() {
         convertedCss += '}\n\n';
       }
 
-       // Replace style={styles.someClass} with className="someClass"
-       convertedCode = convertedCode.replace(/style={styles\.(\w+)}/g, (match, p1) => {
-
+      // Replace style={styles.someClass} with className="someClass"
+      convertedCode = convertedCode.replace(/style={styles\.(\w+)}/g, (match, p1) => {
         const cssClassName = p1.replace(/([A-Z])/g, '-$1').toLowerCase();
         return `className="${cssClassName}"`;
       });
-      
-      
     }
 
     // Remove the entire StyleSheet creation
@@ -58,6 +55,13 @@ function App() {
     // Update the state with the converted code and CSS
     setReactJsCode(convertedCode);
     setCssCode(convertedCss);
+  };
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000); // Hide toast after 2 seconds
+    });
   };
 
   return (
@@ -75,27 +79,42 @@ function App() {
         Convert to React.js
       </button>
       <h3>Converted React.js Code:</h3>
+     
       <pre
         style={{
+          position: 'relative',
           backgroundColor: '#f0f0f0',
-          padding: '10px',
+          padding: '24px',
           whiteSpace: 'pre-wrap',
           wordBreak: 'break-word',
         }}
       >
+         <button
+          onClick={() => handleCopy(reactJsCode)}
+          style={{ position: 'absolute', right: '10px',top: '10px', padding: '5px 10px',}}
+        >Copy Code
+        </button>
         {reactJsCode}
       </pre>
       <h3>Generated CSS:</h3>
+      
       <pre
         style={{
+          position: 'relative',
           backgroundColor: '#f0f0f0',
-          padding: '10px',
+          padding: '24px',
           whiteSpace: 'pre-wrap',
           wordBreak: 'break-word',
         }}
       >
+        <button onClick={() => handleCopy(cssCode)} style={{ position: 'absolute',right: '10px',top: '10px',padding: '5px 10px',}}>Copy CSS</button>
         {cssCode}
       </pre>
+      {showToast && (
+        <div style={{ position: 'fixed', bottom: '20px', right: '20px', background: 'black', color: 'white', padding: '10px', borderRadius: '5px' }}>
+          Code copied to clipboard!
+        </div>
+      )}
     </div>
   );
 }
